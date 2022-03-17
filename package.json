@@ -1,0 +1,16 @@
+{
+	"name": "osumod-to-trello",
+	"version": "1.0.0",
+	"description": "scrapes osumod cards and adds them to the specific trello board list",
+	"private": "true",
+	"scripts": {
+		"start": "ts-node ./src/index.ts",
+		"dev": "nodemon --watch './**/*.ts' --exec 'ts-node' ./src/index.ts"
+	},
+	"author": "chocomilku-",
+	"devDependencies": {
+		"nodemon": "^2.0.15",
+		"ts-node": "^10.7.0",
+		"typescript": "^4.6.2"
+	}
+}
