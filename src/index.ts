@@ -1,7 +1,12 @@
-const hi: string = "hello, world!";
+import puppeteer from "puppeteer";
 
-const a: number = 24;
-const b: number = 6;
+const scrape = async () => {
+	const browser = await puppeteer.launch();
+	const page = await browser.newPage();
+	await page.goto("https://example.com");
+	await page.screenshot({ path: "example.png" });
 
-console.log(hi);
-console.log(a + b);
+	await browser.close();
+};
+
+scrape();
