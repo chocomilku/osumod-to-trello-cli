@@ -1,1 +1,5 @@
+# ignore node modules folder
 node_modules/
+
+#ignore the compiled code from ts to js
+dist/
