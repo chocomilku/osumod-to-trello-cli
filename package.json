@@ -3,11 +3,12 @@
 	"version": "1.0.0",
 	"description": "scrapes osumod cards and adds them to the specific trello board list",
 	"private": "true",
-	"main": "node ./dist/index.js",
+	"main": "dist/index.js",
 	"scripts": {
 		"start": "ts-node ./src/index.ts",
 		"dev": "nodemon --watch './**/*.ts' --exec 'ts-node' ./src/index.ts",
-		"build": "tsc"
+		"build": "tsc",
+		"js": "node ."
 	},
 	"author": "chocomilku",
 	"devDependencies": {
