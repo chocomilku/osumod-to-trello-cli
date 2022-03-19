@@ -22,6 +22,8 @@ tool to scrape cards from osumod to a trello board list
 
 - [ ] implement oauth trello
 
-- [ ] create the scraper first dumbass
+- [x] create the scraper first dumbass
 
 - [ ] display what is going on
+
+- [ ] use cheerio to navigate around the scraped html
