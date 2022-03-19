@@ -3,9 +3,9 @@ import puppeteer from "puppeteer";
 /**
  * Scrapes a specific class that contains the targeted data
  */
-class Scraper {
+export class Scraper {
 	// properties that will be used are declared here
-	private readonly username: string;
+	public readonly username: string;
 	private _html: string | undefined = "";
 	private readonly startUrl: string;
 
@@ -62,12 +62,3 @@ class Scraper {
 		return this._html;
 	}
 }
-
-const a = new Scraper("chocomilku-");
-
-console.log(
-	a
-		.html()
-		.then((res) => console.log(res))
-		.catch((err) => console.error(err))
-);
