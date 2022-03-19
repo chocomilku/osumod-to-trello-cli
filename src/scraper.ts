@@ -34,7 +34,7 @@ export class Scraper {
 
 			// scrape the data from the specific class
 			const data = await page.evaluate(
-				() => document.querySelector(".RequestList-container")?.innerHTML
+				() => document.querySelector("*")?.innerHTML
 			);
 
 			// checks if the url has changed. if it is, throw an error saying that the user is not found
