@@ -26,4 +26,8 @@ tool to scrape cards from osumod to a trello board list
 
 - [ ] display what is going on
 
-- [ ] use cheerio to navigate around the scraped html
+- [x] use cheerio to navigate around the scraped html
+
+- [ ] send the cards to the trello board
+
+- [ ] filter out non-pending maps
