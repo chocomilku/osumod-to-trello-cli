@@ -1,16 +1,22 @@
 import puppeteer from "puppeteer";
 
 const scrape = async () => {
-	const browser = await puppeteer.launch();
-	const page = await browser.newPage();
-	await page.goto("https://osumod.com/chocomilku-");
-	const element = await page.waitForSelector(
-		"div.ant-card:nth-child(1) > div:nth-child(3) > div:nth-child(7)"
-	);
-	const text = await page.evaluate((element) => element.textContent, element);
-	console.log(text);
+	try {
+		const browser = await puppeteer.launch({ headless: false });
+		const page = await browser.newPage();
+		await page.goto("https://osumod.com/chocomilku-", {
+			waitUntil: "networkidle0",
+		});
+		const data = await page.evaluate(
+			() => document.querySelector(".RequestList-container")?.innerHTML
+		);
 
-	await browser.close();
+		console.log(data);
+
+		await browser.close();
+	} catch (err) {
+		console.error(err);
+	}
 };
 
 scrape();
