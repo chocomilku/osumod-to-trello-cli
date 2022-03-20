@@ -8,7 +8,8 @@
 		"start": "ts-node ./src/index.ts",
 		"dev": "nodemon --watch './**/*.ts' --exec 'ts-node' ./src/index.ts",
 		"build": "tsc",
-		"js": "node ."
+		"js": "node .",
+		"test": "ts-node src/process.ts"
 	},
 	"author": "chocomilku",
 	"devDependencies": {
