@@ -11,6 +11,7 @@ export interface cardsType {
 	modType: string;
 	url: string | undefined;
 	img: string | undefined;
+	comments: Array<String | undefined>;
 }
 
 export type status =

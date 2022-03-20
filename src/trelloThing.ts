@@ -66,8 +66,15 @@ export class TrelloHandler {
 					// conditional on mod type. if the mod type is missing, omit the line
 					// cases this might happen is if the queue is a nomination queue
 					const description = `${
-						card.modType == " " ? "" : `Mod: ${card.modType}\n`
-					}BPM: ${card.bpm}\nLength: ${card.time}`;
+						card.modType == " " ? "" : `**Mod:** ${card.modType}\n`
+					}**BPM:** ${card.bpm}\n**Length:** ${card.time}\n${card.comments
+						.map((comment) => {
+							let str = comment;
+							str = str?.replace("Mapper's Comment:", "**Mapper's Comment:**");
+							str = str?.replace("Feedback:", "**Feedback:**");
+							return `${str}\n`;
+						})
+						.join("")}`;
 
 					console.log("Sending %s", name);
 

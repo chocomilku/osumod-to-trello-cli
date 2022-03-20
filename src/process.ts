@@ -56,6 +56,12 @@ export const osumodCards = async (
 
 		const img = $(`${path} > .ant-card-cover > a > img`).attr("src");
 
+		const comments: Array<string | undefined> = [];
+
+		$(`${path} > .ant-card-body > .MapCard-comment`).each((_i, e) => {
+			comments.push($(e).text());
+		});
+
 		// final structure of osumod cards
 		const final: cardsType = {
 			index: i,
@@ -68,6 +74,7 @@ export const osumodCards = async (
 			modType,
 			url,
 			img,
+			comments,
 		};
 
 		// push the data to the cards array
