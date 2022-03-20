@@ -20,6 +20,8 @@
 	},
 	"dependencies": {
 		"cheerio": "^1.0.0-rc.10",
+		"dotenv": "^16.0.0",
+		"node-fetch": "^3.2.3",
 		"prompt-sync": "^4.2.0",
 		"puppeteer": "^13.5.1"
 	}

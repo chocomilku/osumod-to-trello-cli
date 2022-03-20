@@ -3,3 +3,6 @@ node_modules/
 
 #ignore the compiled code from ts to js
 dist/
+
+# hide api keys
+.env

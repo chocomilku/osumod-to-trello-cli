@@ -1,7 +1,12 @@
 import PromptSync from "prompt-sync";
 import { Scraper } from "./scraper";
+import fetch from "node-fetch";
+import dotenv from "dotenv";
+dotenv.config();
 
 import * as cheerio from "cheerio";
+
+const baseUrl = `https://api.trello.com/1`;
 
 const prompt = PromptSync({ sigint: true });
 
@@ -82,10 +87,31 @@ const osumodCards = async (): Promise<cardsType[]> => {
 			modType,
 		};
 
-		// push the data to the `cards` array
+		// push the data to the cards array
 		cards.push(final);
 	}
 
 	console.log(cards);
 	return cards;
 };
+
+const trelloApiThing = async () => {
+	const cards = await osumodCards();
+	cards.forEach((card) => {
+		const name = `(${card.mapper.replace("Mapset by ", "")}) ${card.artist} - ${
+			card.title
+		}`;
+		console.log(name);
+		fetch(
+			`${baseUrl}/cards?key=${process.env.KEY}&token=${process.env.TOKEN}&idList=${process.env.IDLIST}&name=${name}&idLabels=${process.env.IDLABEL}`,
+			{
+				method: "POST",
+				headers: {
+					Accept: "application/json",
+				},
+			}
+		);
+	});
+};
+
+trelloApiThing();
