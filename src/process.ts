@@ -1,17 +1,5 @@
 import * as cheerio from "cheerio";
-
-export interface cardsType {
-	index: number;
-	title: string;
-	artist: string;
-	mapper: string;
-	time: string;
-	bpm: string;
-	status: string;
-	modType: string;
-	url: string | undefined;
-	img: string | undefined;
-}
+import { cardsType } from "./utils/exports";
 
 export const osumodCards = async (
 	scraper: Promise<string | undefined>
@@ -87,6 +75,7 @@ export const osumodCards = async (
 		console.log(cards);
 		return cards;
 	} catch (err) {
+		// TODO: better error handling plz
 		console.error(err);
 	}
 };
