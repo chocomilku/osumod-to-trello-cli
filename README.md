@@ -14,20 +14,22 @@ tool to scrape cards from osumod to a trello board list
 
 ## todo
 
-- [ ] enter self pick using osu api
+- [ ] enter self pick maps using osu api
 
 - [ ] gui web app version
 
 - [ ] cooler command line
 
-- [ ] implement oauth trello
+- [ ] implement oauth trello **automatically using express**
+
+- [ ] implement selecting trello list and board
 
 - [x] create the scraper first dumbass
 
-- [ ] display what is going on
+- [ ] display what is going on **beautifully**
 
 - [x] use cheerio to navigate around the scraped html
 
-- [ ] send the cards to the trello board
+- [x] send the cards to the trello board
 
-- [ ] filter out non-pending maps
+- [x] filter out ~~non-pending~~ a certain card with a specific status maps
