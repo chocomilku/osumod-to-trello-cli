@@ -1,6 +1,7 @@
 import "dotenv/config";
 import fetch from "axios";
 import { cardsType, status } from "./utils/exports";
+import { SiteError } from "./utils/error";
 
 /**
  * Handling posting cards to trello
@@ -41,7 +42,12 @@ export class TrelloHandler {
 	// send cards currently in currentCards to trello
 	sendCards(): void {
 		try {
-			if (!this.currentCards[0]) throw new Error("No Results");
+			if (!this.currentCards[0])
+				throw new SiteError(
+					"No Results",
+					false,
+					`No cards match with the current filter`
+				);
 			// iterate to each card
 			this.currentCards.forEach((card, i) => {
 				// delay every request by the number specified at the top

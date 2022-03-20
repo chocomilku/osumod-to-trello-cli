@@ -1,4 +1,5 @@
 import puppeteer from "puppeteer";
+import { SiteError } from "./utils/error";
 
 /**
  * Scrapes a specific class that contains the targeted data
@@ -39,7 +40,11 @@ export class Scraper {
 		// checks if the url has changed. if it is, throw an error saying that the user is not found
 		if (page.url() != this.startUrl) {
 			await browser.close();
-			throw new Error("User not found.");
+			throw new SiteError(
+				"No User Found.",
+				true,
+				`User ${this.username} is not found on the site. Maybe the spelling is incorrect, The user does not started a modding queue, The user's username is different on the site, or The user does not exist at all.`
+			);
 		}
 
 		// updates the content of the string declared above

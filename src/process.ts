@@ -1,5 +1,6 @@
 import * as cheerio from "cheerio";
 import { cardsType } from "./utils/exports";
+import { SiteError } from "./utils/error";
 
 /**
  * scrapes the data from osumod
@@ -73,7 +74,9 @@ export const osumodCards = async (
 		cards.push(final);
 	}
 	// throw an error if no data is found
-	if (!cards[0]) throw new Error("No Data");
+	if (!cards[0]) {
+		throw new SiteError("No Data", false, "No requests at the moment.");
+	}
 
 	return cards;
 };
