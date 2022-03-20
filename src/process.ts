@@ -5,7 +5,7 @@ import { cardsType } from "./utils/exports";
  * scrapes the data from osumod
  * @returns array of objects containing osumod cards
  */
-export const OsumodCards = async (
+export const osumodCards = async (
 	scraper: Promise<string>
 ): Promise<cardsType[]> => {
 	// extract html from scraper class

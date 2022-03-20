@@ -9,6 +9,7 @@ import { cardsType, status } from "./utils/exports";
 export class TrelloHandler {
 	// data is basically a duplicate for comparison purposes
 	protected readonly data: cardsType[];
+	public interval: number = 750;
 	public readonly baseUrl: string = "https://api.trello.com/1";
 
 	constructor(data: cardsType[]) {
@@ -36,52 +37,57 @@ export class TrelloHandler {
 	sendCards(): void {
 		try {
 			// iterate to each card
-			this.currentCards.forEach(async (card) => {
-				// name that will be shown
-				// removing "Mapset by" on the mapper's name
-				const name = `(${card.mapper.replace("Mapset by ", "")}) ${
-					card.artist
-				} - ${card.title}`;
+			this.currentCards.forEach((card, i) => {
+				setTimeout(async () => {
+					// name that will be shown
+					// removing "Mapset by" on the mapper's name
+					const name = `(${card.mapper.replace(
+						"Mapset by ",
+						""
+					)}) ${card.artist.replaceAll("#", "%23")} - ${card.title.replaceAll(
+						"#",
+						"%23"
+					)}`;
 
-				// details that might be useful
-				// conditional on mod type. if the mod type is missing, omit the line
-				// cases this might happen is if the queue is a nomination queue
-				const description = `${
-					card.modType == " " ? "" : `Mod: ${card.modType}\n`
-				}BPM: ${card.bpm}\nLength: ${card.time}`;
+					// details that might be useful
+					// conditional on mod type. if the mod type is missing, omit the line
+					// cases this might happen is if the queue is a nomination queue
+					const description = `${
+						card.modType == " " ? "" : `Mod: ${card.modType}\n`
+					}BPM: ${card.bpm}\nLength: ${card.time}`;
 
-				console.log(name);
+					console.log(name);
 
-				// sending cards to trello with POST as the method
-				const res = await fetch(
-					`${this.baseUrl}/cards?key=${process.env.KEY}&token=${process.env.TOKEN}&idList=${process.env.IDLIST}&name=${name}&idLabels=${process.env.IDLABEL}&pos=top&urlSource=${card.url}&desc=${description}`,
-					{
-						method: "POST",
-						headers: {
-							Accept: "application/json",
-						},
-					}
-				);
+					// sending cards to trello with POST as the method
+					const res = await fetch(
+						`${this.baseUrl}/cards?key=${process.env.KEY}&token=${process.env.TOKEN}&idList=${process.env.IDLIST}&name=${name}&idLabels=${process.env.IDLABEL}&pos=top&urlSource=${card.url}&desc=${description}`,
+						{
+							method: "POST",
+							headers: {
+								Accept: "application/json",
+							},
+						}
+					);
 
-				// after the first request has been made, the server will respond back with the cards details
-				// extract the id from the response
-				const cardID = res.data.id;
+					// after the first request has been made, the server will respond back with the cards details
+					// extract the id from the response
+					const cardID = res.data.id;
 
-				// then update the card's cover image using POST method again with a specific image.
-				await fetch(
-					`${this.baseUrl}/cards/${cardID}/attachments?key=${process.env.KEY}&token=${process.env.TOKEN}&url=${card.img}&setCover=true`,
-					{
-						method: "POST",
-						headers: {
-							Accept: "application/json",
-						},
-					}
-				);
+					// then update the card's cover image using POST method again with a specific image.
+					await fetch(
+						`${this.baseUrl}/cards/${cardID}/attachments?key=${process.env.KEY}&token=${process.env.TOKEN}&url=${card.img}&setCover=true`,
+						{
+							method: "POST",
+							headers: {
+								Accept: "application/json",
+							},
+						}
+					);
+				}, i * this.interval);
 			});
-
-			console.log("done owo");
 		} catch (error) {
 			console.error(error);
 		}
+		console.log("done owo");
 	}
 }

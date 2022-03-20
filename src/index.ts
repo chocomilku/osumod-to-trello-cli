@@ -1,6 +1,6 @@
 import PromptSync from "prompt-sync";
 import { Scraper } from "./scraper";
-import { OsumodCards } from "./process";
+import { osumodCards } from "./process";
 import { TrelloHandler } from "./trelloThing";
 
 const prompt = PromptSync({ sigint: true });
@@ -9,13 +9,22 @@ const user = prompt("osu! Username: ");
 
 const scraper = new Scraper(user).html();
 
-async () => {
+// anonymous function to run
+(async () => {
 	try {
+		// checks if the data none. if none, panic
 		if (!scraper) throw new Error("help");
-		const cards = OsumodCards(scraper);
+
+		// scrape the cards from the scraper
+		const cards = osumodCards(scraper);
+
+		// extract the data from the promise
 		const data = await cards;
+
+		// send the cards to trello
 		const trelloThing = new TrelloHandler(data);
+		trelloThing.sendCards();
 	} catch (error) {
 		console.error(error);
 	}
-};
+})();
