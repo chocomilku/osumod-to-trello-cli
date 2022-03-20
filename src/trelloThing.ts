@@ -41,6 +41,7 @@ export class TrelloHandler {
 	// send cards currently in currentCards to trello
 	sendCards(): void {
 		try {
+			if (!this.currentCards[0]) throw new Error("No Results");
 			// iterate to each card
 			this.currentCards.forEach((card, i) => {
 				// delay every request by the number specified at the top
@@ -91,9 +92,9 @@ export class TrelloHandler {
 					);
 				}, i * this.interval);
 			});
+			console.log("done owo");
 		} catch (error) {
 			console.error(error);
 		}
-		console.log("done owo");
 	}
 }

@@ -11,9 +11,6 @@ export const osumodCards = async (
 	// extract html from scraper class
 	const data = await scraper;
 
-	// check if there's no data
-	if (!data) throw new Error("help");
-
 	// load the data to cheerio
 	const $ = cheerio.load(data);
 
@@ -75,5 +72,8 @@ export const osumodCards = async (
 		// push the data to the cards array
 		cards.push(final);
 	}
+	// throw an error if no data is found
+	if (!cards[0]) throw new Error("No Data");
+
 	return cards;
 };

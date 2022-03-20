@@ -23,10 +23,10 @@ const scraper = new Scraper(user).html();
 
 		// send the cards to trello
 		const trelloThing = new TrelloHandler(data);
-		trelloThing.filter("Rejected");
+		trelloThing.filter("Finished");
 		console.log(trelloThing.getCurrentCards());
 
-		// trelloThing.sendCards();
+		trelloThing.sendCards();
 	} catch (error) {
 		console.error(error);
 	}
