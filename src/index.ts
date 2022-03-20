@@ -12,7 +12,7 @@ const scraper = new Scraper(user).html();
 async () => {
 	try {
 		if (!scraper) throw new Error("help");
-		const cards = new OsumodCards(scraper);
+		const cards = OsumodCards(scraper);
 		const data = await cards;
 		const trelloThing = new TrelloHandler(data);
 	} catch (error) {
