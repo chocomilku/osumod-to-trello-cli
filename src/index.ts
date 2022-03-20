@@ -1,8 +1,7 @@
+import "dotenv/config";
 import PromptSync from "prompt-sync";
 import { Scraper } from "./scraper";
-import fetch from "node-fetch";
-import dotenv from "dotenv";
-dotenv.config();
+import fetch from "axios";
 
 import * as cheerio from "cheerio";
 
@@ -24,6 +23,8 @@ interface cardsType {
 	bpm: string;
 	status: string;
 	modType: string;
+	url: string | undefined;
+	img: string | undefined;
 }
 
 /**
@@ -75,6 +76,12 @@ const osumodCards = async (): Promise<cardsType[]> => {
 			`${path} > .ant-card-head > .ant-card-head-wrapper > .ant-card-head-title > .MapCard-title > .MapCard-mod-type`
 		).text();
 
+		const urlB = $(`${path} > .ant-card-cover > a`).attr("href");
+
+		const url = urlB?.replace(`/s`, `/beatmapsets`);
+
+		const img = $(`${path} > .ant-card-cover > a > img`).attr("src");
+
 		// final structure of osumod cards
 		const final: cardsType = {
 			index: i,
@@ -85,6 +92,8 @@ const osumodCards = async (): Promise<cardsType[]> => {
 			bpm,
 			status,
 			modType,
+			url,
+			img,
 		};
 
 		// push the data to the cards array
@@ -97,13 +106,24 @@ const osumodCards = async (): Promise<cardsType[]> => {
 
 const trelloApiThing = async () => {
 	const cards = await osumodCards();
-	cards.forEach((card) => {
+	cards.forEach(async (card) => {
 		const name = `(${card.mapper.replace("Mapset by ", "")}) ${card.artist} - ${
 			card.title
 		}`;
+		const description = `Mod: ${card.modType}\nBPM: ${card.bpm}\nLength: ${card.time}`;
 		console.log(name);
-		fetch(
-			`${baseUrl}/cards?key=${process.env.KEY}&token=${process.env.TOKEN}&idList=${process.env.IDLIST}&name=${name}&idLabels=${process.env.IDLABEL}`,
+		const res = await fetch(
+			`${baseUrl}/cards?key=${process.env.KEY}&token=${process.env.TOKEN}&idList=${process.env.IDLIST}&name=${name}&idLabels=${process.env.IDLABEL}&pos=top&urlSource=${card.url}&desc=${description}`,
+			{
+				method: "POST",
+				headers: {
+					Accept: "application/json",
+				},
+			}
+		);
+		const cardID = res.data.id;
+		await fetch(
+			`${baseUrl}/cards/${cardID}/attachments?key=${process.env.KEY}&token=${process.env.TOKEN}&url=${card.img}&setCover=true`,
 			{
 				method: "POST",
 				headers: {

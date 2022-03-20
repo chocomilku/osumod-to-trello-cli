@@ -6,3 +6,5 @@ dist/
 
 # hide api keys
 .env
+
+*.rest
