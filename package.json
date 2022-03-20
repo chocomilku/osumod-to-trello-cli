@@ -4,13 +4,14 @@
 	"description": "scrapes osumod cards and adds them to the specific trello board list",
 	"private": "true",
 	"main": "dist/index.js",
+	"author": "chocomilku",
+	"license": "GPL-3.0-or-later",
 	"scripts": {
 		"start": "ts-node ./src/index.ts",
 		"dev": "nodemon --watch './**/*.ts' --exec 'ts-node' ./src/index.ts",
 		"build": "tsc",
 		"js": "node ."
 	},
-	"author": "chocomilku",
 	"devDependencies": {
 		"@types/prompt-sync": "^4.1.1",
 		"@types/puppeteer": "^5.4.5",

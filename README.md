@@ -54,3 +54,6 @@ IDLABEL=IDLABEL
 `IDLABEL` is the id of the label to be attached to the cards
 
 tutorial wip
+
+&copy; 2022 chocomilku
+GPL-3.0-or-later License
