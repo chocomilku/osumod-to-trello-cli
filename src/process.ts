@@ -1,6 +1,10 @@
 import * as cheerio from "cheerio";
 import { cardsType } from "./utils/exports";
 
+/**
+ * scrapes the data from osumod
+ * @returns array of objects containing osumod cards
+ */
 export const osumodCards = async (
 	scraper: Promise<string | undefined>
 ): Promise<cardsType[] | void> => {
