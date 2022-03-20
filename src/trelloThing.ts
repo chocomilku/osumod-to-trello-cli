@@ -9,7 +9,11 @@ import { cardsType, status } from "./utils/exports";
 export class TrelloHandler {
 	// data is basically a duplicate for comparison purposes
 	protected readonly data: cardsType[];
+
+	// interval for each request
 	public interval: number = 750;
+
+	// base url for the requests
 	public readonly baseUrl: string = "https://api.trello.com/1";
 
 	constructor(data: cardsType[]) {
@@ -29,8 +33,9 @@ export class TrelloHandler {
 	 * @param filter either `"Pending"`, `"Rejected"`, `"Accepted"`, `"Finished"` or `"Nominated"`
 	 */
 	filter(filter: status) {
-		console.log(filter);
-		// TODO
+		this.currentCards = this.currentCards.filter((card) => {
+			return card.status.trim() == filter;
+		});
 	}
 
 	// send cards currently in currentCards to trello
@@ -38,6 +43,7 @@ export class TrelloHandler {
 		try {
 			// iterate to each card
 			this.currentCards.forEach((card, i) => {
+				// delay every request by the number specified at the top
 				setTimeout(async () => {
 					// name that will be shown
 					// removing "Mapset by" on the mapper's name
@@ -56,7 +62,7 @@ export class TrelloHandler {
 						card.modType == " " ? "" : `Mod: ${card.modType}\n`
 					}BPM: ${card.bpm}\nLength: ${card.time}`;
 
-					console.log(name);
+					console.log("Sending %s", name);
 
 					// sending cards to trello with POST as the method
 					const res = await fetch(
@@ -71,7 +77,7 @@ export class TrelloHandler {
 
 					// after the first request has been made, the server will respond back with the cards details
 					// extract the id from the response
-					const cardID = res.data.id;
+					const cardID = await res.data.id;
 
 					// then update the card's cover image using POST method again with a specific image.
 					await fetch(

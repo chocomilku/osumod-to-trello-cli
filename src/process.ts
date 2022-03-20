@@ -75,6 +75,5 @@ export const osumodCards = async (
 		// push the data to the cards array
 		cards.push(final);
 	}
-	console.log(cards);
 	return cards;
 };
