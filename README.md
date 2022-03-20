@@ -33,3 +33,24 @@ tool to scrape cards from osumod to a trello board list
 - [x] send the cards to the trello board
 
 - [x] filter out ~~non-pending~~ a certain card with a specific status maps
+
+- [ ] add options
+
+## .env configuration
+
+```
+KEY=TRELLOAPIKEY
+TOKEN=TRELLOAPITOKEN
+IDLIST=IDLIST
+IDLABEL=IDLABEL
+```
+
+`KEY` is your Trello api key
+
+`TOKEN` is your token. basically your authorization.
+
+`IDLIST` is the id of the list that the cards are going to
+
+`IDLABEL` is the id of the label to be attached to the cards
+
+tutorial wip
