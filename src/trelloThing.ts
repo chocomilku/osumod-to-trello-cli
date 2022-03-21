@@ -75,10 +75,30 @@ export class TrelloHandler {
 	 * Only cards with the status that is pass in this method will be left on `getCurrentCards` property
 	 * @param filter either `"Pending"`, `"Rejected"`, `"Accepted"`, `"Finished"` or `"Nominated"`
 	 */
-	filter(filter: status) {
+	public filter(filter: status) {
 		this.currentCards = this.currentCards.filter((card) => {
 			return card.status == filter;
 		});
+	}
+
+	/**
+	 * sift through the `currentCards` for duplicates from `getTrelloCards()` and removes it
+	 *
+	 * recommended that you use this first then `filter()`
+	 */
+	public async sift() {
+		const trello = await this.getTrelloCards();
+		const current = this.getCurrentCards();
+
+		// remove cards that are already on trello
+		const final = current.filter((card) => {
+			const name = `(${card.mapper.replace("Mapset by ", "")}) ${
+				card.artist
+			} - ${card.title}`;
+
+			return !trello.includes(name);
+		});
+		this.currentCards = final;
 	}
 
 	// send cards currently in currentCards to trello
@@ -147,5 +167,16 @@ export class TrelloHandler {
 				);
 			}, i * this.interval);
 		});
+	}
+
+	/**
+	 * sift through the results, filter cards with the status, then send it.
+	 * @param filter cards with this status to be sent
+	 */
+	public start(filter: status) {
+		this.sift();
+		this.filter(filter);
+		this.sendCards();
+		console.log("done owo");
 	}
 }
