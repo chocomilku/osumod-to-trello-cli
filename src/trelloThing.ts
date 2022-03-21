@@ -53,7 +53,7 @@ export class TrelloHandler {
 	 */
 	filter(filter: status) {
 		this.currentCards = this.currentCards.filter((card) => {
-			return card.status.trim() == filter;
+			return card.status == filter;
 		});
 	}
 

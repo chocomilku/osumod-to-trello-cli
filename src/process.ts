@@ -55,14 +55,20 @@ export const osumodCards = async (
 
 		const time = $(
 			`${path} > .ant-card-body > .MapCard-attr-list > .MapCard-attr:nth-child(1)`
-		).text();
+		)
+			.text()
+			.trim();
 		const bpm = $(
 			`${path} > .ant-card-body > .MapCard-attr-list > .MapCard-attr:nth-child(2)`
-		).text();
+		)
+			.text()
+			.trim();
 
 		const status = $(
 			`${path} > .ant-card-head > .ant-card-head-wrapper > .ant-card-head-title > .MapCard-title > div:nth-child(1) > span:nth-child(2)`
-		).text();
+		)
+			.text()
+			.trim();
 
 		const modType = $(
 			`${path} > .ant-card-head > .ant-card-head-wrapper > .ant-card-head-title > .MapCard-title > .MapCard-mod-type`

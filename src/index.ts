@@ -39,7 +39,7 @@ const user = prompt("osu! Username: ");
 
 		// send the cards to trello
 		const trelloThing = new TrelloHandler(data);
-		trelloThing.filter("Finished");
+		// trelloThing.filter("Finished");
 		console.log(trelloThing.getCurrentCards());
 
 		trelloThing.sendCards();
