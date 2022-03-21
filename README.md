@@ -22,7 +22,7 @@ tool to scrape cards from osumod to a trello board list
 
 - [ ] implement oauth trello **automatically using express**
 
-- [ ] implement selecting trello list and board
+- [ ] implement selecting trello board, list, and labels
 
 - [x] create the scraper first dumbass
 
@@ -34,7 +34,13 @@ tool to scrape cards from osumod to a trello board list
 
 - [x] filter out ~~non-pending~~ a certain card with a specific status maps
 
-- [ ] add options
+- [x] add options to scraper
+
+- [ ] add `M4M` label for M4M mod type
+
+- [ ] release a npm package of the scraper + data processing thing only with GNU license
+
+- [ ] implement user input
 
 ## .env configuration
 
