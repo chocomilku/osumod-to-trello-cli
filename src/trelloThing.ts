@@ -47,6 +47,30 @@ export class TrelloHandler {
 		return this.currentCards;
 	}
 
+	public async getTrelloCards() {
+		// fetch cards currently on trello
+		const res = await fetch(
+			`${this.baseUrl}/lists/${process.env.IDLIST}/cards?key=${process.env.KEY}&token=${process.env.TOKEN}`
+		);
+
+		interface trelloCardType {
+			name: string;
+		}
+
+		// extract the data
+		const tCards: Array<trelloCardType> = await res.data;
+
+		// final array to be returned
+		const cards: Array<string> = [];
+
+		// each name will be extracted and pushed to the cards array
+		tCards.map((card) => {
+			cards.push(card.name);
+		});
+
+		return cards;
+	}
+
 	/**
 	 * Only cards with the status that is pass in this method will be left on `getCurrentCards` property
 	 * @param filter either `"Pending"`, `"Rejected"`, `"Accepted"`, `"Finished"` or `"Nominated"`
@@ -123,6 +147,5 @@ export class TrelloHandler {
 				);
 			}, i * this.interval);
 		});
-		console.log("done owo");
 	}
 }
