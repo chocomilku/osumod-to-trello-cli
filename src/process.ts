@@ -27,85 +27,81 @@ import { SiteError, TechnicalError } from "./utils/error";
 export const osumodCards = async (
 	scraper: Promise<string>
 ): Promise<cardsType[]> => {
-	try {
-		// extract html from scraper class
-		const data = await scraper;
+	// extract html from scraper class
+	const data = await scraper;
 
-		// load the data to cheerio
-		const $ = cheerio.load(data);
+	// load the data to cheerio
+	const $ = cheerio.load(data);
 
-		// final array to be returned
-		const cards = [];
+	// final array to be returned
+	const cards = [];
 
-		// get the total number of cards present at osumod
-		const totalCards = $(".RequestList-container").children().length;
+	// get the total number of cards present at osumod
+	const totalCards = $(".RequestList-container").children().length;
 
-		// iterate through each cards and get the specific data
-		for (let i = 0; i < totalCards; i++) {
-			const path = `.RequestList-container > .ant-card:nth-child(${i + 1})`;
+	// iterate through each cards and get the specific data
+	for (let i = 0; i < totalCards; i++) {
+		const path = `.RequestList-container > .ant-card:nth-child(${i + 1})`;
 
-			const title = $(`${path} > .ant-card-body > .MapCard-primary`).text();
+		const title = $(`${path} > .ant-card-body > .MapCard-primary`).text();
 
-			const artist = $(
-				`${path} > .ant-card-body > .MapCard-row:nth-child(2)`
-			).text();
+		const artist = $(
+			`${path} > .ant-card-body > .MapCard-row:nth-child(2)`
+		).text();
 
-			const mapper = $(
-				`${path} > .ant-card-body > .MapCard-row:nth-child(3)`
-			).text();
+		const mapper = $(
+			`${path} > .ant-card-body > .MapCard-row:nth-child(3)`
+		).text();
 
-			const time = $(
-				`${path} > .ant-card-body > .MapCard-attr-list > .MapCard-attr:nth-child(1)`
-			).text();
-			const bpm = $(
-				`${path} > .ant-card-body > .MapCard-attr-list > .MapCard-attr:nth-child(2)`
-			).text();
+		const time = $(
+			`${path} > .ant-card-body > .MapCard-attr-list > .MapCard-attr:nth-child(1)`
+		).text();
+		const bpm = $(
+			`${path} > .ant-card-body > .MapCard-attr-list > .MapCard-attr:nth-child(2)`
+		).text();
 
-			const status = $(
-				`${path} > .ant-card-head > .ant-card-head-wrapper > .ant-card-head-title > .MapCard-title > div:nth-child(1) > span:nth-child(2)`
-			).text();
+		const status = $(
+			`${path} > .ant-card-head > .ant-card-head-wrapper > .ant-card-head-title > .MapCard-title > div:nth-child(1) > span:nth-child(2)`
+		).text();
 
-			const modType = $(
-				`${path} > .ant-card-head > .ant-card-head-wrapper > .ant-card-head-title > .MapCard-title > .MapCard-mod-type`
-			).text();
+		const modType = $(
+			`${path} > .ant-card-head > .ant-card-head-wrapper > .ant-card-head-title > .MapCard-title > .MapCard-mod-type`
+		).text();
 
-			const urlB = $(`${path} > .ant-card-cover > a`).attr("href");
+		const urlB = $(`${path} > .ant-card-cover > a`).attr("href");
 
-			const url = urlB?.replace(`/s`, `/beatmapsets`);
+		const url = urlB?.replace(`/s`, `/beatmapsets`);
 
-			const img = $(`${path} > .ant-card-cover > a > img`).attr("src");
+		const img = $(`${path} > .ant-card-cover > a > img`).attr("src");
 
-			const comments: Array<string | undefined> = [];
+		const comments: Array<string | undefined> = [];
 
-			$(`${path} > .ant-card-body > .MapCard-comment`).each((_i, e) => {
-				comments.push($(e).text());
-			});
+		$(`${path} > .ant-card-body > .MapCard-comment`).each((_i, e) => {
+			comments.push($(e).text());
+		});
 
-			// final structure of osumod cards
-			const final: cardsType = {
-				index: i,
-				title,
-				artist,
-				mapper,
-				time,
-				bpm,
-				status,
-				modType,
-				url,
-				img,
-				comments,
-			};
+		// final structure of osumod cards
+		const final: cardsType = {
+			index: i,
+			title,
+			artist,
+			mapper,
+			time,
+			bpm,
+			status,
+			modType,
+			url,
+			img,
+			comments,
+		};
 
-			// push the data to the cards array
-			cards.push(final);
-		}
-		// throw an error if no data is found
-		if (!cards[0]) {
-			throw new SiteError("No Data", false, "No requests at the moment.");
-		}
-
-		return cards;
-	} catch (error) {
-		throw new TechnicalError("Data Processing module Error", true, "send help");
+		// push the data to the cards array
+		cards.push(final);
 	}
+	// throw an error if no data is found
+	if (!cards[0]) {
+		throw new SiteError("No Data", false, "No requests at the moment.");
+	}
+
+	return cards;
 };

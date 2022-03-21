@@ -28,7 +28,6 @@ import { scraperOptions } from "./utils/exports";
 export class Scraper {
 	// properties that will be used are declared here
 	public readonly username: string;
-	private _html: string = "";
 	private readonly startUrl: string;
 
 	// the parameters required when creating this new class
@@ -74,13 +73,15 @@ export class Scraper {
 				);
 			}
 
-			// updates the content of the string declared above
-			if (data) {
-				this._html = data;
-			}
-
 			// closes the browser
 			await browser.close();
+
+			// sends the data
+			if (data) {
+				return data;
+			} else {
+				return "";
+			}
 		} catch (error) {
 			throw new TechnicalError("Scraper Error", true, "send help");
 		}
@@ -91,7 +92,7 @@ export class Scraper {
 	 * @returns data from the declared variable above that is hopefully now changed by the scrape method
 	 */
 	public async html(): Promise<string> {
-		await this.scrape();
-		return this._html;
+		const res = await this.scrape();
+		return res;
 	}
 }

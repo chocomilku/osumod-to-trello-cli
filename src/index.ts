@@ -20,7 +20,6 @@ import PromptSync from "prompt-sync";
 import { Scraper } from "./scraper";
 import { osumodCards } from "./process";
 import { TrelloHandler } from "./trelloThing";
-import { TechnicalError } from "./utils/error";
 
 const prompt = PromptSync({ sigint: true });
 
@@ -30,7 +29,7 @@ const user = prompt("osu! Username: ");
 (async () => {
 	try {
 		// scrape osumod html
-		const scraper = new Scraper(user, { archive: true }).html();
+		const scraper = new Scraper(user).html();
 
 		// scrape the cards from the scraper
 		const cards = osumodCards(scraper);
