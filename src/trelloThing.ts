@@ -19,7 +19,7 @@
 import "dotenv/config";
 import fetch from "axios";
 import { cardsType, status } from "./utils/exports";
-import { SiteError } from "./utils/error";
+import { SiteError, TechnicalError } from "./utils/error";
 
 /**
  * Handling posting cards to trello
@@ -72,20 +72,18 @@ export class TrelloHandler {
 				setTimeout(async () => {
 					// name that will be shown
 					// removing "Mapset by" on the mapper's name
-					const name = `(${card.mapper.replace(
-						"Mapset by ",
-						""
-					)}) ${card.artist.replaceAll("#", "%23")} - ${card.title.replaceAll(
-						"#",
-						"%23"
-					)}`;
+					const name = `(${card.mapper.replace("Mapset by ", "")}) ${
+						card.artist
+					} - ${card.title}`;
 
 					// details that might be useful
 					// conditional on mod type. if the mod type is missing, omit the line
 					// cases this might happen is if the queue is a nomination queue
 					const description = `${
-						card.modType == " " ? "" : `**Mod:** ${card.modType}\n`
-					}**BPM:** ${card.bpm}\n**Length:** ${card.time}\n${card.comments
+						card.modType == "" ? "" : `**Mod:** ${card.modType}\n`
+					}${card.bpm == "" ? "" : `**BPM:** ${card.bpm}\n`}${
+						card.time == "" ? "" : `**Length:** ${card.time}\n`
+					}${card.comments
 						.map((comment) => {
 							let str = comment;
 							str = str?.replace("Mapper's Comment:", "**Mapper's Comment:**");
@@ -96,16 +94,19 @@ export class TrelloHandler {
 
 					console.log("Sending %s", name);
 
+					// path to be fetched
+					const path = `${this.baseUrl}/cards?key=${process.env.KEY}&token=${process.env.TOKEN}&idList=${process.env.IDLIST}&name=${name}&idLabels=${process.env.IDLABEL}&pos=top&urlSource=${card.url}&desc=${description}`;
+
+					// encode the path to a valid URI
+					const encodedURL = encodeURI(path);
+
 					// sending cards to trello with POST as the method
-					const res = await fetch(
-						`${this.baseUrl}/cards?key=${process.env.KEY}&token=${process.env.TOKEN}&idList=${process.env.IDLIST}&name=${name}&idLabels=${process.env.IDLABEL}&pos=top&urlSource=${card.url}&desc=${description}`,
-						{
-							method: "POST",
-							headers: {
-								Accept: "application/json",
-							},
-						}
-					);
+					const res = await fetch(encodedURL, {
+						method: "POST",
+						headers: {
+							Accept: "application/json",
+						},
+					});
 
 					// after the first request has been made, the server will respond back with the cards details
 					// extract the id from the response
@@ -125,7 +126,7 @@ export class TrelloHandler {
 			});
 			console.log("done owo");
 		} catch (error) {
-			console.error(error);
+			throw new TechnicalError("Trello API Handler Error", true, "send help");
 		}
 	}
 }

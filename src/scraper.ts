@@ -17,11 +17,13 @@
  */
 
 import puppeteer from "puppeteer";
-import { SiteError } from "./utils/error";
+import { SiteError, TechnicalError } from "./utils/error";
 import { scraperOptions } from "./utils/exports";
 
 /**
  * Scrapes a specific class that contains the targeted data
+ * @param username username to search
+ * @param options object containing options on what to do
  */
 export class Scraper {
 	// properties that will be used are declared here
@@ -45,38 +47,43 @@ export class Scraper {
 	 * @returns string containing the scraped data of a div class
 	 */
 	private async scrape() {
-		// launches a chrome instance
-		const browser = await puppeteer.launch({ headless: false });
+		try {
+			// launches a chrome instance
+			const browser = await puppeteer.launch({ headless: false });
 
-		// creates a new tab
-		const page = await browser.newPage();
-		// goes to the specific url and waits until the page stops requesting to its api
-		await page.goto(this.startUrl, {
-			waitUntil: "networkidle0",
-		});
+			// creates a new tab
+			const page = await browser.newPage();
+			// goes to the specific url and waits until the page stops requesting to its api
+			await page.goto(this.startUrl, {
+				waitUntil: "networkidle0",
+				timeout: 0,
+			});
 
-		// scrape the data from the specific class
-		const data = await page.evaluate(
-			() => document.querySelector("*")?.innerHTML
-		);
-
-		// checks if the url has changed. if it is, throw an error saying that the user is not found
-		if (page.url() != this.startUrl) {
-			await browser.close();
-			throw new SiteError(
-				"No User Found.",
-				true,
-				`User ${this.username} is not found on the site. Maybe the spelling is incorrect, The user does not started a modding queue, The user's username is different on the site, or The user does not exist at all.`
+			// scrape the data from the specific class
+			const data = await page.evaluate(
+				() => document.querySelector("*")?.innerHTML
 			);
-		}
 
-		// updates the content of the string declared above
-		if (data) {
-			this._html = data;
-		}
+			// checks if the url has changed. if it is, throw an error saying that the user is not found
+			if (page.url() != this.startUrl) {
+				await browser.close();
+				throw new SiteError(
+					"No User Found.",
+					true,
+					`User ${this.username} is not found on the site. Maybe the spelling is incorrect, The user does not started a modding queue, The user's username is different on the site, or The user does not exist at all.`
+				);
+			}
 
-		// closes the browser
-		await browser.close();
+			// updates the content of the string declared above
+			if (data) {
+				this._html = data;
+			}
+
+			// closes the browser
+			await browser.close();
+		} catch (error) {
+			throw new TechnicalError("Scraper Error", true, "send help");
+		}
 	}
 
 	/**

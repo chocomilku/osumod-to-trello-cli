@@ -29,11 +29,8 @@ const user = prompt("osu! Username: ");
 // anonymous function to run
 (async () => {
 	try {
+		// scrape osumod html
 		const scraper = new Scraper(user, { archive: true }).html();
-		// checks if the data none. if none, panic
-		if (!scraper) {
-			throw new TechnicalError("Unexpected Error happened.", true, "send help");
-		}
 
 		// scrape the cards from the scraper
 		const cards = osumodCards(scraper);
@@ -43,7 +40,7 @@ const user = prompt("osu! Username: ");
 
 		// send the cards to trello
 		const trelloThing = new TrelloHandler(data);
-		// trelloThing.filter("Finished");
+		trelloThing.filter("Finished");
 		console.log(trelloThing.getCurrentCards());
 
 		trelloThing.sendCards();
@@ -53,10 +50,13 @@ const user = prompt("osu! Username: ");
 			console.error(error.description);
 			console.error(error.stack);
 			process.exit(1);
-		} else {
+		} else if (!error.danger) {
 			console.log(error.message);
 			console.log(error.description);
 			process.exit(0);
+		} else {
+			console.error(error);
+			process.exit(1);
 		}
 	}
 })();
