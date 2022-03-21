@@ -18,6 +18,7 @@
 
 import puppeteer from "puppeteer";
 import { SiteError } from "./utils/error";
+import { scraperOptions } from "./utils/exports";
 
 /**
  * Scrapes a specific class that contains the targeted data
@@ -29,9 +30,13 @@ export class Scraper {
 	private readonly startUrl: string;
 
 	// the parameters required when creating this new class
-	constructor(username: string) {
+	constructor(username: string, options: scraperOptions = { archive: false }) {
 		this.username = username;
-		this.startUrl = `https://osumod.com/${this.username}`;
+		if (options.archive) {
+			this.startUrl = `https://osumod.com/${this.username}/archives`;
+		} else {
+			this.startUrl = `https://osumod.com/${this.username}`;
+		}
 	}
 
 	/**

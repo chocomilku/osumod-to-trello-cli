@@ -38,3 +38,7 @@ export type status =
 	| "Accepted"
 	| "Finished"
 	| "Nominated";
+
+export interface scraperOptions {
+	archive?: boolean;
+}

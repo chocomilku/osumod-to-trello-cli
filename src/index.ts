@@ -29,7 +29,7 @@ const user = prompt("osu! Username: ");
 // anonymous function to run
 (async () => {
 	try {
-		const scraper = new Scraper(user).html();
+		const scraper = new Scraper(user, { archive: true }).html();
 		// checks if the data none. if none, panic
 		if (!scraper) {
 			throw new TechnicalError("Unexpected Error happened.", true, "send help");
