@@ -16,31 +16,73 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import PromptSync from "prompt-sync";
 import { Scraper } from "./scraper";
 import { osumodCards } from "./process";
 import { TrelloHandler } from "./trelloThing";
+import { reqTypeType } from "./utils/exports";
+import { TechnicalError } from "./utils/error";
+const { prompt } = require("enquirer");
 
-const prompt = PromptSync({ sigint: true });
+// const prompt = PromptSync({ sigint: true });
 
-const user = prompt("osu! Username: ");
+// const user = prompt("osu! Username: ");
 
 // anonymous function to run
 (async () => {
 	try {
-		// scrape osumod html
-		const scraper = new Scraper(user).html();
+		// prompts user their choice of request type
+		const reqType = await prompt({
+			type: "select",
+			name: "request",
+			message: "Request Method: (osumod or Self Pick)",
+			choices: ["osumod Request", "Self Pick"],
+		});
 
-		// scrape the cards from the scraper
-		const cards = osumodCards(scraper);
+		// get the user input with types
+		// [RANT] the f**king `enquirer` package doesn't have any types on them aaaaaaaaaaaarghhhh
+		// now i have to use my other eye on the documentation that is non existent aaaaaaaaaaaaaaaaaaaaa
+		// need to use my brain to max
+		const reqChoice: reqTypeType = await reqType.request;
 
-		// extract the data from the promise
-		const data = await cards;
+		// procedure if "self pick" is picked
+		if (reqChoice == "Self Pick") {
+			throw new TechnicalError(
+				"Feature not implemented yet",
+				true,
+				"Feature not implemented yet. Come back again later"
+			);
 
-		// send the cards to trello
-		const trelloThing = new TrelloHandler(data);
+			// procedure if "osumod Request" is picked
+		} else if (reqChoice == "osumod Request") {
+			// asks user their username
+			const user = await prompt({
+				type: "input",
+				name: "username",
+				message: "osu! Username:",
+			});
 
-		trelloThing.start("Pending");
+			console.log("Please wait...");
+
+			// scrape osumod html
+			const scraper = new Scraper(user.username).html();
+
+			// scrape the cards from the scraper
+			const cards = osumodCards(scraper);
+
+			// extract the data from the promise
+			const data = await cards;
+
+			// send the cards to trello
+			const trelloThing = new TrelloHandler(data);
+
+			await trelloThing.start("Pending");
+			console.log("done owo");
+
+			// procedure if not of any of the two options is picked
+			// time to panic
+		} else {
+			throw new TechnicalError("Unexpected Error", true, "send help");
+		}
 	} catch (error: any) {
 		console.error(error);
 	}

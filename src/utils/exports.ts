@@ -42,3 +42,5 @@ export type status =
 export interface scraperOptions {
 	archive?: boolean;
 }
+
+export type reqTypeType = "osumod Request" | "Self Pick";
