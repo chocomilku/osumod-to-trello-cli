@@ -173,8 +173,8 @@ export class TrelloHandler {
 	 * sift through the results, filter cards with the status, then send it.
 	 * @param filter cards with this status to be sent
 	 */
-	public start(filter: status) {
-		this.sift();
+	public async start(filter: status) {
+		await this.sift();
 		this.filter(filter);
 		this.sendCards();
 		console.log("done owo");

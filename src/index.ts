@@ -42,18 +42,6 @@ const user = prompt("osu! Username: ");
 
 		trelloThing.start("Pending");
 	} catch (error: any) {
-		if (error.danger) {
-			console.error(error.message);
-			console.error(error.description);
-			console.error(error.stack);
-			process.exit(1);
-		} else if (!error.danger) {
-			console.log(error.message);
-			console.log(error.description);
-			process.exit(0);
-		} else {
-			console.error(error);
-			process.exit(1);
-		}
+		console.error(error);
 	}
 })();
