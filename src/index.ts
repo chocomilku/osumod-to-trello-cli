@@ -57,11 +57,36 @@ const { prompt } = require("enquirer");
 
 		// procedure if "self pick" is picked
 		if (reqChoice == "Self Pick") {
-			throw new TechnicalError(
-				"Feature not implemented yet",
-				true,
-				"Feature not implemented yet. Come back again later"
-			);
+			// throw new TechnicalError(
+			// 	"Feature not implemented yet",
+			// 	true,
+			// 	"Feature not implemented yet. Come back again later"
+			// );
+
+			// asks user for the map link
+			const mapLink = await prompt({
+				type: "input",
+				name: "link",
+				message: "Enter map link:",
+			});
+
+			// splits the url pathname by "/"
+			const bID = new URL(mapLink.link).pathname.split("/");
+
+			/**
+			 * finds the first number in an array
+			 * @param arr array that includes string and numbers
+			 * @returns the extracted the first number in number type
+			 */
+			function findNum(arr: Array<string>): number {
+				const checker = arr.filter((key) => {
+					if (parseFloat(key)) return key;
+					return;
+				});
+				return ~~checker[0];
+			}
+
+			console.log(findNum(bID));
 
 			// procedure if "osumod Request" is picked
 		} else if (reqChoice == "osumod Request") {
