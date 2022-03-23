@@ -23,9 +23,20 @@ import { reqTypeType } from "./utils/exports";
 import { TechnicalError } from "./utils/error";
 const { prompt } = require("enquirer");
 
-// const prompt = PromptSync({ sigint: true });
-
-// const user = prompt("osu! Username: ");
+(() => {
+	const envKeys = ["KEY", "TOKEN", "IDLIST", "IDLABEL"];
+	envKeys.forEach((key) => {
+		if (!(key in process.env)) {
+			throw new TechnicalError(
+				`.env Key: ${key} is not found.`,
+				true,
+				"Make sure to check your .env file if it has been filled up"
+			);
+		} else {
+			console.log(`.env key ${key} has been found.`);
+		}
+	});
+})();
 
 // anonymous function to run
 (async () => {
