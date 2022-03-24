@@ -73,21 +73,6 @@ const { prompt } = require("enquirer");
 			// splits the url pathname by "/"
 			const bID = new URL(mapLink.link).pathname.split("/");
 
-			/**
-			 * finds the first number in an array
-			 * @param arr array that includes string and numbers
-			 * @returns the extracted the first number in number type
-			 */
-			function findNum(arr: Array<string>): number {
-				const checker = arr.filter((key) => {
-					if (parseFloat(key)) return key;
-					return;
-				});
-				return ~~checker[0];
-			}
-
-			console.log(findNum(bID));
-
 			// procedure if "osumod Request" is picked
 		} else if (reqChoice == "osumod Request") {
 			// asks user their username
