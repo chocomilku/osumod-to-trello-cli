@@ -20,6 +20,9 @@ import "dotenv/config";
 import fetch from "axios";
 import { TechnicalError } from "./utils/error";
 
+/**
+ * Class that fetches oauth token and beatmapset data from osu api v2
+ */
 export class osuAPI {
 	public readonly link: string;
 	private readonly id: number;
@@ -47,8 +50,13 @@ export class osuAPI {
 		return ~~checker[0];
 	}
 
+	/**
+	 * fetches oauth token from osu api v2
+	 * @returns access token for authentication
+	 */
 	protected async getOsuToken(): Promise<string | void> {
 		try {
+			// type of the data to be sent as a body
 			interface osuApiTokenType {
 				client_id: number | string | undefined;
 				client_secret: string | undefined;
@@ -56,6 +64,7 @@ export class osuAPI {
 				scope: "public";
 			}
 
+			// body/data to be post fetched containing some very sensitive data stuff
 			const body: osuApiTokenType = {
 				client_id: process.env.OSU_CLIENTID,
 				client_secret: process.env.OSU_CLIENTSECRET,
@@ -63,6 +72,7 @@ export class osuAPI {
 				scope: "public",
 			};
 
+			// fetches a post request
 			const request = await fetch(this.tokenBaseUrl.href, {
 				method: "POST",
 				headers: {
@@ -72,27 +82,38 @@ export class osuAPI {
 				data: JSON.stringify(body),
 			});
 
+			// type of the response from the fetch request earlier
 			interface osuApiTokenResponseType {
 				token_type: string;
 				expires_in: number;
 				access_token: string;
 			}
 
+			// gets the json response
 			const response: osuApiTokenResponseType = await request.data;
+
+			// returns only the access token from the api
 			return response.access_token;
 		} catch (e) {
 			console.error(e);
 		}
 	}
 
-	public async getBeatmapData(): Promise<any> {
+	/**
+	 * fetches beatmapset data from the osu api v2
+	 * @returns json response from the api
+	 */
+	public async getBeatmapsetData(): Promise<any> {
 		try {
+			// awaits the token for authentication
 			const auth = await this.getOsuToken();
 
+			// panics if auth returned nothing
 			if (!auth) {
 				throw new TechnicalError("No token received.", true, "send help");
 			}
 
+			// fetch the beatmapset data from the osu api v2 containing the bearer authentication fetched earlier
 			const request = await fetch(
 				`${this.baseUrl.href}/beatmapsets/${this.id}`,
 				{
@@ -105,6 +126,7 @@ export class osuAPI {
 				}
 			);
 
+			// return the full json result from the api
 			return await request.data;
 		} catch (e) {
 			console.error(e);
@@ -116,4 +138,4 @@ const test = new osuAPI(
 	new URL("https://osu.ppy.sh/beatmapsets/1619724#mania/3307091")
 );
 
-test.getBeatmapData();
+test.getBeatmapsetData();
