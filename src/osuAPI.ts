@@ -19,12 +19,15 @@
 import "dotenv/config";
 import fetch from "axios";
 import { TechnicalError } from "./utils/error";
+import { osuCardsType } from "./utils/exports";
+import format from "format-duration";
 
 /**
  * Class that fetches oauth token and beatmapset data from osu api v2
  */
 export class osuAPI {
 	public readonly link: string;
+	public readonly fullLink: string;
 	private readonly id: number;
 	protected readonly baseUrl: URL = new URL("https://osu.ppy.sh/api/v2");
 	protected readonly tokenBaseUrl: URL = new URL(
@@ -35,6 +38,7 @@ export class osuAPI {
 		this.link = link.pathname;
 		const mapLinkArr = this.link.split("/");
 		this.id = this.findNum(mapLinkArr);
+		this.fullLink = `${link.protocol}//${link.hostname}${link.pathname}`;
 	}
 
 	/**
@@ -103,7 +107,7 @@ export class osuAPI {
 	 * fetches beatmapset data from the osu api v2
 	 * @returns json response from the api
 	 */
-	public async getBeatmapsetData(): Promise<any> {
+	public async getBeatmapsetData(): Promise<void | object> {
 		try {
 			// awaits the token for authentication
 			const auth = await this.getOsuToken();
@@ -138,4 +142,35 @@ const test = new osuAPI(
 	new URL("https://osu.ppy.sh/beatmapsets/1619724#mania/3307091")
 );
 
-test.getBeatmapsetData();
+interface dataAny {
+	[key: string]: any;
+}
+
+export const osuMapsetData = async (
+	data: Promise<dataAny | void>,
+	url: string
+): Promise<osuCardsType[]> => {
+	const response = await data;
+
+	if (!response) {
+		throw new TechnicalError(
+			"No response.",
+			true,
+			"No response from the API. send help"
+		);
+	}
+
+	const final: osuCardsType = {
+		url,
+		img: response.covers.cover,
+		title: response.title,
+		artist: response.artist,
+		mapper: response.creator,
+		time: format(parseFloat(response.beatmaps[0].total_length) * 1000),
+		bpm: response.bpm.toString(),
+	};
+
+	return [final];
+};
+
+osuMapsetData(test.getBeatmapsetData(), test.fullLink);
