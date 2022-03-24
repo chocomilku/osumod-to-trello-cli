@@ -24,7 +24,14 @@ import { TechnicalError } from "./utils/error";
 const { prompt } = require("enquirer");
 
 (() => {
-	const envKeys = ["KEY", "TOKEN", "IDLIST", "IDLABEL"];
+	const envKeys = [
+		"KEY",
+		"TOKEN",
+		"IDLIST",
+		"IDLABEL",
+		"OSU_CLIENTID",
+		"OSU_CLIENTSECRET",
+	];
 	envKeys.forEach((key) => {
 		if (!(key in process.env)) {
 			throw new TechnicalError(

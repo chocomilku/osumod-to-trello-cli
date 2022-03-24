@@ -16,12 +16,20 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import fetch from "axios";
+import "dotenv/config";
+import fetch, { AxiosRequestHeaders } from "axios";
 
 export class osuAPI {
 	public readonly link: string;
 	private readonly id: number;
 	protected readonly baseUrl: URL = new URL("https://osu.ppy.sh/api/v2");
+	protected readonly tokenBaseUrl: URL = new URL(
+		"https://osu.ppy.sh/oauth/token"
+	);
+	protected readonly headers: AxiosRequestHeaders = {
+		"Content-Type": "application/json",
+		Accept: "application/json",
+	};
 
 	constructor(link: URL) {
 		this.link = link.pathname;
@@ -42,17 +50,42 @@ export class osuAPI {
 		return ~~checker[0];
 	}
 
+	public async getOsuToken() {
+		try {
+			interface osuApiTokenType {
+				client_id: number | string | undefined;
+				client_secret: string | undefined;
+				grant_type: "client_credentials";
+				scope: "public";
+			}
+
+			const body: osuApiTokenType = {
+				client_id: process.env.OSU_CLIENTID,
+				client_secret: process.env.OSU_CLIENTSECRET,
+				grant_type: "client_credentials",
+				scope: "public",
+			};
+			const request = await fetch(this.tokenBaseUrl.href, {
+				method: "POST",
+				headers: this.headers,
+				data: JSON.stringify(body),
+			});
+
+			const response = await request.data;
+			console.log(response);
+		} catch (e) {
+			console.error(e);
+		}
+	}
+
 	async getBeatmapData() {
 		try {
 			const request = await fetch(`${this.baseUrl.href}/beatmaps/${this.id}`, {
 				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-					Accept: "application/json",
-				},
+				headers: this.headers,
 			});
 
-			console.log(request.data.response);
+			console.log(request.data);
 		} catch (e) {
 			console.error(e);
 		}
@@ -63,4 +96,4 @@ const test = new osuAPI(
 	new URL("https://osu.ppy.sh/beatmapsets/1619724#mania/3307091")
 );
 
-test.getBeatmapData();
+test.getOsuToken();
