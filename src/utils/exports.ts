@@ -32,6 +32,12 @@ export interface cardsType {
 	comments: Array<String | undefined>;
 }
 
+export interface osuCardsType
+	extends Omit<cardsType, "index" | "comments" | "status" | "modType"> {
+	url: string;
+	img: string;
+}
+
 export type status =
 	| "Pending"
 	| "Rejected"

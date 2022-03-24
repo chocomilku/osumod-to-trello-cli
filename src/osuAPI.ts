@@ -17,7 +17,8 @@
  */
 
 import "dotenv/config";
-import fetch, { AxiosRequestHeaders } from "axios";
+import fetch from "axios";
+import { TechnicalError } from "./utils/error";
 
 export class osuAPI {
 	public readonly link: string;
@@ -26,10 +27,6 @@ export class osuAPI {
 	protected readonly tokenBaseUrl: URL = new URL(
 		"https://osu.ppy.sh/oauth/token"
 	);
-	protected readonly headers: AxiosRequestHeaders = {
-		"Content-Type": "application/json",
-		Accept: "application/json",
-	};
 
 	constructor(link: URL) {
 		this.link = link.pathname;
@@ -50,7 +47,7 @@ export class osuAPI {
 		return ~~checker[0];
 	}
 
-	public async getOsuToken() {
+	protected async getOsuToken(): Promise<string | void> {
 		try {
 			interface osuApiTokenType {
 				client_id: number | string | undefined;
@@ -65,27 +62,50 @@ export class osuAPI {
 				grant_type: "client_credentials",
 				scope: "public",
 			};
+
 			const request = await fetch(this.tokenBaseUrl.href, {
 				method: "POST",
-				headers: this.headers,
+				headers: {
+					"Content-Type": "application/json",
+					Accept: "application/json",
+				},
 				data: JSON.stringify(body),
 			});
 
-			const response = await request.data;
-			console.log(response);
+			interface osuApiTokenResponseType {
+				token_type: string;
+				expires_in: number;
+				access_token: string;
+			}
+
+			const response: osuApiTokenResponseType = await request.data;
+			return response.access_token;
 		} catch (e) {
 			console.error(e);
 		}
 	}
 
-	async getBeatmapData() {
+	public async getBeatmapData(): Promise<any> {
 		try {
-			const request = await fetch(`${this.baseUrl.href}/beatmaps/${this.id}`, {
-				method: "GET",
-				headers: this.headers,
-			});
+			const auth = await this.getOsuToken();
 
-			console.log(request.data);
+			if (!auth) {
+				throw new TechnicalError("No token received.", true, "send help");
+			}
+
+			const request = await fetch(
+				`${this.baseUrl.href}/beatmapsets/${this.id}`,
+				{
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+						Accept: "application/json",
+						Authorization: `Bearer ${auth}`,
+					},
+				}
+			);
+
+			return await request.data;
 		} catch (e) {
 			console.error(e);
 		}
@@ -96,4 +116,4 @@ const test = new osuAPI(
 	new URL("https://osu.ppy.sh/beatmapsets/1619724#mania/3307091")
 );
 
-test.getOsuToken();
+test.getBeatmapData();
