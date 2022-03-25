@@ -19,7 +19,7 @@
 import "dotenv/config";
 import fetch from "axios";
 import { TechnicalError } from "./utils/error";
-import { osuCardsType } from "./utils/exports";
+import { dataAny, osuCardsType } from "./utils/exports";
 import format from "format-duration";
 
 /**
@@ -138,20 +138,20 @@ export class osuAPI {
 	}
 }
 
-const test = new osuAPI(
-	new URL("https://osu.ppy.sh/beatmapsets/1619724#mania/3307091")
-);
-
-interface dataAny {
-	[key: string]: any;
-}
-
+/**
+ * extracts data from the json response from osu api v2
+ * @param data you will put the json response from the osu api v2 here
+ * @param url the url of the map in string form. this will be sent to trello
+ * @returns returns a `osuCardsType` promise object
+ */
 export const osuMapsetData = async (
 	data: Promise<dataAny | void>,
 	url: string
-): Promise<osuCardsType[]> => {
+): Promise<osuCardsType> => {
+	// extract data from the promise
 	const response = await data;
 
+	// panics if response returned nothing
 	if (!response) {
 		throw new TechnicalError(
 			"No response.",
@@ -160,6 +160,7 @@ export const osuMapsetData = async (
 		);
 	}
 
+	// maps the object with the required data to be sent
 	const final: osuCardsType = {
 		url,
 		img: response.covers.cover,
@@ -170,7 +171,6 @@ export const osuMapsetData = async (
 		bpm: response.bpm.toString(),
 	};
 
-	return [final];
+	// return the final object
+	return final;
 };
-
-osuMapsetData(test.getBeatmapsetData(), test.fullLink);

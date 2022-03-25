@@ -50,3 +50,7 @@ export interface scraperOptions {
 }
 
 export type reqTypeType = "osumod Request" | "Self Pick";
+
+export interface dataAny {
+	[key: string]: any;
+}
