@@ -125,7 +125,9 @@ export class TrelloHandler {
 				// conditional on mod type. if the mod type is missing, omit the line
 				// cases this might happen is if the queue is a nomination queue
 				const description = `${
-					card.modType == "" ? "" : `**Mod:** ${card.modType}\n`
+					card.modType == "" || card.modType == undefined
+						? ""
+						: `**Mod:** ${card.modType}\n`
 				}${card.bpm == "" ? "" : `**BPM:** ${card.bpm}\n`}${
 					card.time == "" ? "" : `**Length:** ${card.time}\n`
 				}${
@@ -186,6 +188,5 @@ export class TrelloHandler {
 		await this.sift();
 		this.filter(filter);
 		this.sendCards();
-		console.log("done owo");
 	}
 }

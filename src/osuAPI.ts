@@ -142,7 +142,7 @@ export class osuAPI {
  * extracts data from the json response from osu api v2
  * @param data you will put the json response from the osu api v2 here
  * @param url the url of the map in string form. this will be sent to trello
- * @returns returns a `osuCardsType` promise object
+ * @returns returns a `cardsType` promise object
  */
 export const osuMapsetData = async (
 	data: Promise<dataAny | void>,

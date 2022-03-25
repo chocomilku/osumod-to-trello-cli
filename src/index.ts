@@ -21,6 +21,7 @@ import { osumodCards } from "./process";
 import { TrelloHandler } from "./trelloThing";
 import { reqTypeType } from "./utils/exports";
 import { TechnicalError } from "./utils/error";
+import { osuMapsetData, osuAPI } from "./osuAPI";
 const { prompt } = require("enquirer");
 
 (() => {
@@ -59,7 +60,8 @@ const { prompt } = require("enquirer");
 		// get the user input with types
 		// [RANT] the f**king `enquirer` package doesn't have any types on them aaaaaaaaaaaarghhhh
 		// now i have to use my other eye on the documentation that is non existent aaaaaaaaaaaaaaaaaaaaa
-		// need to use my brain to max
+		// need to max out my brain
+		// somehow using require doesn't show any types. :hmm:
 		const reqChoice: reqTypeType = await reqType.request;
 
 		// procedure if "self pick" is picked
@@ -77,11 +79,18 @@ const { prompt } = require("enquirer");
 				message: "Enter map link:",
 			});
 
-			// splits the url pathname by "/"
-			const bID = new URL(mapLink.link).pathname.split("/");
+			const osuApiThing = new osuAPI(new URL(mapLink.link));
+			const osuData = osuMapsetData(
+				osuApiThing.getBeatmapsetData(),
+				osuApiThing.fullLink
+			);
+			const data = await osuData;
+			const trelloThing = new TrelloHandler([data]);
 
-			// procedure if "osumod Request" is picked
-		} else if (reqChoice == "osumod Request") {
+			await trelloThing.start("Pending");
+		}
+		// procedure if "osumod Request" is picked
+		else if (reqChoice == "osumod Request") {
 			// asks user their username
 			const user = await prompt({
 				type: "input",
@@ -104,11 +113,10 @@ const { prompt } = require("enquirer");
 			const trelloThing = new TrelloHandler(data);
 
 			await trelloThing.start("Pending");
-			console.log("done owo");
-
-			// procedure if not of any of the two options is picked
-			// time to panic
-		} else {
+		}
+		// procedure if not of any of the two options is picked
+		// time to panic
+		else {
 			throw new TechnicalError("Unexpected Error", true, "send help");
 		}
 	} catch (error: any) {
