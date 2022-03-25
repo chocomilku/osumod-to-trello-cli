@@ -66,12 +66,6 @@ const { prompt } = require("enquirer");
 
 		// procedure if "self pick" is picked
 		if (reqChoice == "Self Pick") {
-			// throw new TechnicalError(
-			// 	"Feature not implemented yet",
-			// 	true,
-			// 	"Feature not implemented yet. Come back again later"
-			// );
-
 			// asks user for the map link
 			const mapLink = await prompt({
 				type: "input",
@@ -79,12 +73,17 @@ const { prompt } = require("enquirer");
 				message: "Enter map link:",
 			});
 
+			// get beatmapset data from osu api v2
 			const osuApiThing = new osuAPI(new URL(mapLink.link));
 			const osuData = osuMapsetData(
 				osuApiThing.getBeatmapsetData(),
 				osuApiThing.fullLink
 			);
+
+			// extract data
 			const data = await osuData;
+
+			// send to trello
 			const trelloThing = new TrelloHandler([data]);
 
 			await trelloThing.start("Pending");
