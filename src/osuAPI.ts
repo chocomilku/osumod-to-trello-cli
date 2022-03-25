@@ -19,7 +19,7 @@
 import "dotenv/config";
 import fetch from "axios";
 import { TechnicalError } from "./utils/error";
-import { dataAny, osuCardsType } from "./utils/exports";
+import { cardsType, dataAny } from "./utils/exports";
 import format from "format-duration";
 
 /**
@@ -147,7 +147,7 @@ export class osuAPI {
 export const osuMapsetData = async (
 	data: Promise<dataAny | void>,
 	url: string
-): Promise<osuCardsType> => {
+): Promise<cardsType> => {
 	// extract data from the promise
 	const response = await data;
 
@@ -161,7 +161,7 @@ export const osuMapsetData = async (
 	}
 
 	// maps the object with the required data to be sent
-	const final: osuCardsType = {
+	const final: cardsType = {
 		url,
 		img: response.covers.cover,
 		title: response.title,

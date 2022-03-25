@@ -18,26 +18,26 @@
 
 // dedicated file for interfaces that are used anywhere and some constants that will be used
 
+/**
+ * cards from osumod
+ */
 export interface cardsType {
-	index: number;
+	index?: number;
 	title: string;
 	artist: string;
 	mapper: string;
 	time: string;
 	bpm: string;
-	status: string;
-	modType: string;
+	status?: string;
+	modType?: string;
 	url: string | undefined;
 	img: string | undefined;
-	comments: Array<String | undefined>;
+	comments?: Array<String | undefined>;
 }
 
-export interface osuCardsType
-	extends Omit<cardsType, "index" | "comments" | "status" | "modType"> {
-	url: string;
-	img: string;
-}
-
+/**
+ * statuses from osumod
+ */
 export type status =
 	| "Pending"
 	| "Rejected"

@@ -19,7 +19,7 @@
 import "dotenv/config";
 import fetch from "axios";
 import { cardsType, status } from "./utils/exports";
-import { SiteError, TechnicalError } from "./utils/error";
+import { SiteError } from "./utils/error";
 
 /**
  * Handling posting cards to trello
@@ -76,9 +76,11 @@ export class TrelloHandler {
 	 * @param filter either `"Pending"`, `"Rejected"`, `"Accepted"`, `"Finished"` or `"Nominated"`
 	 */
 	public filter(filter: status) {
-		this.currentCards = this.currentCards.filter((card) => {
-			return card.status == filter;
-		});
+		if (this.currentCards[0].index) {
+			this.currentCards = this.currentCards.filter((card) => {
+				return card.status == filter;
+			});
+		}
 	}
 
 	/**
@@ -126,14 +128,21 @@ export class TrelloHandler {
 					card.modType == "" ? "" : `**Mod:** ${card.modType}\n`
 				}${card.bpm == "" ? "" : `**BPM:** ${card.bpm}\n`}${
 					card.time == "" ? "" : `**Length:** ${card.time}\n`
-				}${card.comments
-					.map((comment) => {
-						let str = comment;
-						str = str?.replace("Mapper's Comment:", "**Mapper's Comment:**");
-						str = str?.replace("Feedback:", "**Feedback:**");
-						return `${str}\n`;
-					})
-					.join("")}`;
+				}${
+					card.comments == undefined
+						? ""
+						: `${card.comments
+								.map((comment) => {
+									let str = comment;
+									str = str?.replace(
+										"Mapper's Comment:",
+										"**Mapper's Comment:**"
+									);
+									str = str?.replace("Feedback:", "**Feedback:**");
+									return `${str}\n`;
+								})
+								.join("")}`
+				}`;
 
 				console.log("Sending %s", name);
 
