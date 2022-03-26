@@ -79,8 +79,11 @@ OSU_CLIENTSECRET=CLIENTSECRET
 ```
 
 `username` your username on osu and osumod
+
 `request` id of the label for the "request" request from your trello board
+
 `m4m` id of the label for the "M4M" request from your trello board
+
 `self_pick` id of the label for the "Self Pick" request from your trello board
 
 &copy; 2022 chocomilku
