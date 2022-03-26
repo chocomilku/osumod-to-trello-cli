@@ -19,7 +19,7 @@
 import { Scraper } from "./scraper";
 import { osumodCards } from "./process";
 import { TrelloHandler } from "./trelloThing";
-import { configType, reqTypeType } from "./utils/exports";
+import { configType, dataAny, reqTypeType } from "./utils/exports";
 import { TechnicalError } from "./utils/error";
 import { osuMapsetData, osuAPI } from "./osuAPI";
 import fs from "fs";
@@ -111,16 +111,33 @@ const { prompt } = require("enquirer");
 		// procedure if "osumod Request" is picked
 		else if (reqChoice == "osumod Request") {
 			// asks user their username
-			const user = await prompt({
-				type: "input",
-				name: "username",
-				message: "osu! Username:",
-			});
+			// const user = await prompt({
+			// 	type: "input",
+			// 	name: "username",
+			// 	message: "osu! Username:",
+			// });
+
+			const userCondition = async (): Promise<string | undefined> => {
+				if (config()) {
+					console.log("config.json found\nUser: %s", config()?.username);
+					return config()?.username;
+				} else {
+					const ask = await prompt({
+						type: "input",
+						name: "username",
+						message: "osu! Username:",
+					});
+
+					return ask.username;
+				}
+			};
+
+			const user = await userCondition();
 
 			console.log("Please wait...");
 
 			// scrape osumod html
-			const scraper = new Scraper(user.username).html();
+			const scraper = new Scraper(user as string).html();
 
 			// scrape the cards from the scraper
 			const cards = osumodCards(scraper);

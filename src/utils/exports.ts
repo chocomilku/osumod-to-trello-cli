@@ -57,7 +57,7 @@ export interface dataAny {
 }
 
 export interface configType {
-	user: string;
+	username: string;
 	trello: {
 		request: string;
 		m4m: string;
