@@ -38,9 +38,9 @@ tool to scrape cards from osumod to a trello board list
 
 - [ ] add `M4M` label for M4M mod type
 
-- [ ] release a npm package of the scraper + data processing thing only with GNU license
+- [ ] add config file instead of relying on .env file
 
-- [ ] implement user input
+- [ ] add startup file to fill up the config file
 
 ## .env configuration
 
@@ -49,15 +49,21 @@ KEY=TRELLOAPIKEY
 TOKEN=TRELLOAPITOKEN
 IDLIST=IDLIST
 IDLABEL=IDLABEL
+OSU_CLIENTID=CLIENTID
+OSU_CLIENTSECRET=CLIENTSECRET
 ```
 
 `KEY` is your Trello api key
 
 `TOKEN` is your token. basically your authorization.
 
-`IDLIST` is the id of the list that the cards are going to
+`IDLIST` is the id of the list that the cards are going to (soon to be deprecated)
 
-`IDLABEL` is the id of the label to be attached to the cards
+`IDLABEL` is the id of the label to be attached to the cards (soon to be deprecated)
+
+`OSU_CLIENTID` your client id from osu oauth application
+
+`OSU_CLIENTSECRET` your client secret from osu oauth application
 
 tutorial wip
 
