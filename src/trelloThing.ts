@@ -76,7 +76,7 @@ export class TrelloHandler {
 	 * @param filter either `"Pending"`, `"Rejected"`, `"Accepted"`, `"Finished"` or `"Nominated"`
 	 */
 	public filter(filter: status) {
-		if (this.currentCards[0].index) {
+		if (filter != "Any") {
 			this.currentCards = this.currentCards.filter((card) => {
 				return card.status == filter;
 			});
@@ -148,17 +148,21 @@ export class TrelloHandler {
 
 				console.log("Sending %s", name);
 
-				// path to be fetched
-				const path = `${this.baseUrl}/cards?key=${process.env.KEY}&token=${process.env.TOKEN}&idList=${process.env.IDLIST}&name=${name}&idLabels=${process.env.IDLABEL}&pos=top&urlSource=${card.url}&desc=${description}`;
-
-				// encode the path to a valid URI
-				const encodedURL = encodeURI(path);
-
 				// sending cards to trello with POST as the method
-				const res = await fetch(encodedURL, {
+				const res = await fetch(`${this.baseUrl}/cards`, {
 					method: "POST",
 					headers: {
 						Accept: "application/json",
+					},
+					params: {
+						key: process.env.KEY,
+						token: process.env.TOKEN,
+						idList: process.env.IDLIST,
+						idLabels: process.env.IDLABEL,
+						name,
+						pos: "top",
+						urlSource: card.url,
+						desc: description,
 					},
 				});
 
@@ -167,15 +171,18 @@ export class TrelloHandler {
 				const cardID = await res.data.id;
 
 				// then update the card's cover image using POST method again with a specific image.
-				await fetch(
-					`${this.baseUrl}/cards/${cardID}/attachments?key=${process.env.KEY}&token=${process.env.TOKEN}&url=${card.img}&setCover=true`,
-					{
-						method: "POST",
-						headers: {
-							Accept: "application/json",
-						},
-					}
-				);
+				await fetch(`${this.baseUrl}/cards/${cardID}/attachments`, {
+					method: "POST",
+					headers: {
+						Accept: "application/json",
+					},
+					params: {
+						key: process.env.KEY,
+						token: process.env.TOKEN,
+						url: card.img,
+						setCover: true,
+					},
+				});
 			}, i * this.interval);
 		});
 	}

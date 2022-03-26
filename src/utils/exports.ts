@@ -43,7 +43,8 @@ export type status =
 	| "Rejected"
 	| "Accepted"
 	| "Finished"
-	| "Nominated";
+	| "Nominated"
+	| "Any";
 
 export interface scraperOptions {
 	archive?: boolean;

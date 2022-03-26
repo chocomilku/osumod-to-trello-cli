@@ -86,7 +86,7 @@ const { prompt } = require("enquirer");
 			// send to trello
 			const trelloThing = new TrelloHandler([data]);
 
-			await trelloThing.start("Pending");
+			await trelloThing.start("Any");
 		}
 		// procedure if "osumod Request" is picked
 		else if (reqChoice == "osumod Request") {
