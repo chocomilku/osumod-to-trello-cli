@@ -1,0 +1,8 @@
+{
+	"username": "osuusername",
+	"trello": {
+		"request": "requestlabel",
+		"m4m": "m4mlabel",
+		"self_pick": "selfpicklabel"
+	}
+}
