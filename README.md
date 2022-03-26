@@ -6,11 +6,11 @@ tool to scrape cards from osumod to a trello board list
 
 - why not
 
-- for archiving cards purposes
+- for archiving mod requests purposes
 
-- able to provide more options than the 3 options found at osumod
+- able to provide more options than the options found at osumod
 
-- able to add self pick maps (wip)
+- able to add self pick maps
 
 ## todo
 
