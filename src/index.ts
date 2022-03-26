@@ -25,7 +25,9 @@ import { osuMapsetData, osuAPI } from "./osuAPI";
 import fs from "fs";
 const { prompt } = require("enquirer");
 
+// checking for required files
 (() => {
+	// checks if .env file exists
 	if (!fs.existsSync(`${process.cwd()}/.env`)) {
 		throw new TechnicalError(
 			".env not found",
@@ -33,6 +35,8 @@ const { prompt } = require("enquirer");
 			"Make sure the .env file exists. please create one that follows the format"
 		);
 	}
+
+	// list of .env keys to find
 	const envKeys = [
 		"KEY",
 		"TOKEN",
@@ -41,6 +45,8 @@ const { prompt } = require("enquirer");
 		"OSU_CLIENTID",
 		"OSU_CLIENTSECRET",
 	];
+
+	// check each .env key
 	envKeys.forEach((key) => {
 		if (!(key in process.env)) {
 			throw new TechnicalError(
@@ -50,6 +56,8 @@ const { prompt } = require("enquirer");
 			);
 		}
 	});
+
+	// checks if config.json file exists
 	if (!fs.existsSync(`${process.cwd()}/config.json`)) {
 		throw new TechnicalError(
 			"config.json not found",
@@ -57,12 +65,15 @@ const { prompt } = require("enquirer");
 			"config.json doesn't exist. please create one that follows the format"
 		);
 	}
+
+	// access config file
 	const config: configType = JSON.parse(
 		fs.readFileSync(`${process.cwd()}/config.json`, {
 			encoding: "utf8",
 		})
 	);
 
+	// list of config.json keys to find
 	const configKeys = [
 		config.username,
 		config.trello.m4m,
@@ -70,6 +81,7 @@ const { prompt } = require("enquirer");
 		config.trello.self_pick,
 	];
 
+	// checks each config.json key
 	configKeys.forEach((key) => {
 		if (!key) {
 			throw new TechnicalError(
@@ -81,7 +93,7 @@ const { prompt } = require("enquirer");
 	});
 })();
 
-// anonymous function to run
+// main program proper
 (async () => {
 	try {
 		// prompts user their choice of request type
