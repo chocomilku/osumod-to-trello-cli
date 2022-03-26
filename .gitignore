@@ -6,3 +6,6 @@ dist/
 
 # hide api keys
 .env
+
+# file that will be generated (soon) to read sensitive data
+config.json

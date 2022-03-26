@@ -19,9 +19,10 @@
 import { Scraper } from "./scraper";
 import { osumodCards } from "./process";
 import { TrelloHandler } from "./trelloThing";
-import { reqTypeType } from "./utils/exports";
+import { configType, reqTypeType } from "./utils/exports";
 import { TechnicalError } from "./utils/error";
 import { osuMapsetData, osuAPI } from "./osuAPI";
+import fs from "fs";
 const { prompt } = require("enquirer");
 
 (() => {
@@ -56,6 +57,25 @@ const { prompt } = require("enquirer");
 			message: "Request Method: (osumod or Self Pick)",
 			choices: ["osumod Request", "Self Pick"],
 		});
+
+		const configChecker = (): boolean => {
+			if (fs.existsSync(`${process.cwd()}/config.json`)) {
+				return true;
+			} else {
+				return false;
+			}
+		};
+
+		const config = (): configType | undefined => {
+			if (configChecker()) {
+				const data = fs.readFileSync(`${process.cwd()}/config.json`, {
+					encoding: "utf8",
+				});
+				return JSON.parse(data);
+			} else {
+				return undefined;
+			}
+		};
 
 		// get the user input with types
 		// [RANT] the f**king `enquirer` package doesn't have any types on them aaaaaaaaaaaarghhhh
@@ -116,7 +136,7 @@ const { prompt } = require("enquirer");
 		// procedure if not of any of the two options is picked
 		// time to panic
 		else {
-			throw new TechnicalError("Unexpected Error", true, "send help");
+			// throw new TechnicalError("Unexpected Error", true, "send help");
 		}
 	} catch (error: any) {
 		console.error(error);

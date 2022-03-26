@@ -14,7 +14,7 @@ tool to scrape cards from osumod to a trello board list
 
 ## todo
 
-- [ ] enter self pick maps using osu api
+- [x] enter self pick maps using osu api
 
 - [ ] gui web app version
 
