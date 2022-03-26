@@ -19,13 +19,20 @@
 import { Scraper } from "./scraper";
 import { osumodCards } from "./process";
 import { TrelloHandler } from "./trelloThing";
-import { configType, dataAny, reqTypeType } from "./utils/exports";
+import { configType, reqTypeType } from "./utils/exports";
 import { TechnicalError } from "./utils/error";
 import { osuMapsetData, osuAPI } from "./osuAPI";
 import fs from "fs";
 const { prompt } = require("enquirer");
 
 (() => {
+	if (!fs.existsSync(`${process.cwd()}/.env`)) {
+		throw new TechnicalError(
+			".env not found",
+			true,
+			"Make sure the .env file exists. please create one that follows the format"
+		);
+	}
 	const envKeys = [
 		"KEY",
 		"TOKEN",
@@ -41,8 +48,35 @@ const { prompt } = require("enquirer");
 				true,
 				"Make sure to check your .env file if it has been filled up"
 			);
-		} else {
-			console.log(`.env key ${key} has been found.`);
+		}
+	});
+	if (!fs.existsSync(`${process.cwd()}/config.json`)) {
+		throw new TechnicalError(
+			"config.json not found",
+			true,
+			"config.json doesn't exist. please create one that follows the format"
+		);
+	}
+	const config: configType = JSON.parse(
+		fs.readFileSync(`${process.cwd()}/config.json`, {
+			encoding: "utf8",
+		})
+	);
+
+	const configKeys = [
+		config.username,
+		config.trello.m4m,
+		config.trello.request,
+		config.trello.self_pick,
+	];
+
+	configKeys.forEach((key) => {
+		if (!key) {
+			throw new TechnicalError(
+				`config.json has a missing property/properties`,
+				true,
+				"Make sure to check your config.json file if it has been filled up properly"
+			);
 		}
 	});
 })();
@@ -58,30 +92,12 @@ const { prompt } = require("enquirer");
 			choices: ["osumod Request", "Self Pick"],
 		});
 
-		const configChecker = (): boolean => {
-			if (fs.existsSync(`${process.cwd()}/config.json`)) {
-				return true;
-			} else {
-				return false;
-			}
-		};
+		const config: configType = JSON.parse(
+			fs.readFileSync(`${process.cwd()}/config.json`, {
+				encoding: "utf8",
+			})
+		);
 
-		const config = (): configType | undefined => {
-			if (configChecker()) {
-				const data = fs.readFileSync(`${process.cwd()}/config.json`, {
-					encoding: "utf8",
-				});
-				return JSON.parse(data);
-			} else {
-				return undefined;
-			}
-		};
-
-		// get the user input with types
-		// [RANT] the f**king `enquirer` package doesn't have any types on them aaaaaaaaaaaarghhhh
-		// now i have to use my other eye on the documentation that is non existent aaaaaaaaaaaaaaaaaaaaa
-		// need to max out my brain
-		// somehow using require doesn't show any types. :hmm:
 		const reqChoice: reqTypeType = await reqType.request;
 
 		// procedure if "self pick" is picked
@@ -110,34 +126,12 @@ const { prompt } = require("enquirer");
 		}
 		// procedure if "osumod Request" is picked
 		else if (reqChoice == "osumod Request") {
-			// asks user their username
-			// const user = await prompt({
-			// 	type: "input",
-			// 	name: "username",
-			// 	message: "osu! Username:",
-			// });
-
-			const userCondition = async (): Promise<string | undefined> => {
-				if (config()) {
-					console.log("config.json found\nUser: %s", config()?.username);
-					return config()?.username;
-				} else {
-					const ask = await prompt({
-						type: "input",
-						name: "username",
-						message: "osu! Username:",
-					});
-
-					return ask.username;
-				}
-			};
-
-			const user = await userCondition();
+			const user = config.username;
 
 			console.log("Please wait...");
 
 			// scrape osumod html
-			const scraper = new Scraper(user as string).html();
+			const scraper = new Scraper(user).html();
 
 			// scrape the cards from the scraper
 			const cards = osumodCards(scraper);

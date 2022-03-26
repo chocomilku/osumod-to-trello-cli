@@ -104,7 +104,7 @@ export class TrelloHandler {
 	}
 
 	// send cards currently in currentCards to trello
-	sendCards(): void {
+	public sendCards(): void {
 		if (!this.currentCards[0])
 			throw new SiteError(
 				"No Results",
@@ -145,6 +145,8 @@ export class TrelloHandler {
 								})
 								.join("")}`
 				}`;
+
+				const idlabel: string[] = [];
 
 				console.log("Sending %s", name);
 
