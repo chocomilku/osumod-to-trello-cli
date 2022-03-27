@@ -169,6 +169,7 @@ export const osuMapsetData = async (
 		mapper: response.creator,
 		time: format(parseFloat(response.beatmaps[0].total_length) * 1000),
 		bpm: response.bpm.toString(),
+		request_type: "Self Pick",
 	};
 
 	// return the final object

@@ -99,6 +99,7 @@ export const osumodCards = async (
 			url,
 			img,
 			comments,
+			request_type: "osumod Request",
 		};
 
 		// push the data to the cards array

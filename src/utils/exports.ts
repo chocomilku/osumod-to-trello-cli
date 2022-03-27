@@ -33,6 +33,7 @@ export interface cardsType {
 	url: string | undefined;
 	img: string | undefined;
 	comments?: Array<String | undefined>;
+	request_type: reqTypeType;
 }
 
 /**
