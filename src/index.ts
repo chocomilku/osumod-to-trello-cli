@@ -19,10 +19,11 @@
 import { Scraper } from "./scraper";
 import { osumodCards } from "./process";
 import { TrelloHandler } from "./trelloThing";
-import { configType, reqTypeType } from "./utils/exports";
+import { reqTypeType } from "./utils/exports";
 import { TechnicalError } from "./utils/error";
 import { osuMapsetData, osuAPI } from "./osuAPI";
 import fs from "fs";
+import { config } from "./utils/config";
 const { prompt } = require("enquirer");
 
 // checking for required files
@@ -66,13 +67,6 @@ const { prompt } = require("enquirer");
 		);
 	}
 
-	// access config file
-	const config: configType = JSON.parse(
-		fs.readFileSync(`${process.cwd()}/config.json`, {
-			encoding: "utf8",
-		})
-	);
-
 	// list of config.json keys to find
 	const configKeys = [
 		config.username,
@@ -103,12 +97,6 @@ const { prompt } = require("enquirer");
 			message: "Request Method: (osumod or Self Pick)",
 			choices: ["osumod Request", "Self Pick"],
 		});
-
-		const config: configType = JSON.parse(
-			fs.readFileSync(`${process.cwd()}/config.json`, {
-				encoding: "utf8",
-			})
-		);
 
 		const reqChoice: reqTypeType = await reqType.request;
 

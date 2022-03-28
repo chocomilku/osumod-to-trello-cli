@@ -20,7 +20,7 @@ import "dotenv/config";
 import fetch from "axios";
 import { cardsType, status } from "./utils/exports";
 import { SiteError } from "./utils/error";
-import fs from "fs";
+import { config } from "./utils/config";
 
 /**
  * Handling posting cards to trello
@@ -148,6 +148,15 @@ export class TrelloHandler {
 				}`;
 
 				const idlabel: string[] = [];
+				if (!(card.request_type == "Self Pick")) {
+					idlabel.push(config.trello.request);
+				} else if (card.request_type == "Self Pick") {
+					idlabel.push(config.trello.self_pick);
+				}
+
+				if (card.modType?.includes("M4M")) {
+					idlabel.push(config.trello.m4m);
+				}
 
 				console.log("Sending %s", name);
 
@@ -161,7 +170,7 @@ export class TrelloHandler {
 						key: process.env.KEY,
 						token: process.env.TOKEN,
 						idList: process.env.IDLIST,
-						idLabels: process.env.IDLABEL,
+						idLabels: idlabel.join(""),
 						name,
 						pos: "top",
 						urlSource: card.url,
