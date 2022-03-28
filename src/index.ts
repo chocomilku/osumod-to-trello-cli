@@ -42,7 +42,6 @@ const { prompt } = require("enquirer");
 		"KEY",
 		"TOKEN",
 		"IDLIST",
-		"IDLABEL",
 		"OSU_CLIENTID",
 		"OSU_CLIENTSECRET",
 	];
